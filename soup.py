@@ -19,7 +19,7 @@ soup2 = BeautifulSoup(response2.text, 'html.parser')
 
 everything = soup.find_all('html')
    
-file = open('bills.csv', 'w')
+file = open('bills.csv', 'a')
 writer = csv.writer(file)
 
 writer.writerow(['Sponsor', 'Title', 'Name', 'Tracker'])
