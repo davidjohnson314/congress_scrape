@@ -5,17 +5,18 @@ from csv import writer
 
 #bill scraping loop
 def billScrape(soup,writer):
-        #sponsor = soup.find_all("table", class_="standard01")
+    
+
     for sponsor in soup.find_all("table", class_="standard01"):
         sponsor_text = sponsor.find("a", target="_blank").get_text()
         #print(sponsor_text)
 
-    #title = soup.find_all("h1", class_="legDetail")    
+    
     for title in soup.find_all("h1", class_="legDetail"):
         title_text = title.get_text()
         #print(title_text)
 
-    #name = soup.find_all("h2", class_="primary")
+    
     for name in soup.find_all("h2", class_="primary"):
         name_text = name.get_text()
         #print(name_text)
@@ -25,12 +26,12 @@ def billScrape(soup,writer):
         #tracker_text = tracker.get_text()
         #print(tracker_text)
 
-    #tracker2 = soup.find_all("h3", class_="currentVersion")    
-    for tracker2 in soup.find_all("h3", class_="currentVersion"):
-        tracker2_text = tracker2.find("span").get_text()
+    # for tracker2 in soup.find_all("h3", class_="currentVersion"):
+    #     tracker2_text = tracker2.find("span").get_text()
         # print(tracker2_text)
-        
-    writer.writerow([sponsor_text,title_text,name_text,tracker2_text])
+
+
+    writer.writerow([sponsor_text,title_text,name_text])
 
 #csv writer
 file = open('bills.csv', 'a')
@@ -38,22 +39,29 @@ writer = csv.writer(file)
 writer.writerow(['Sponsor', 'Title', 'Name', 'Tracker'])
 
 #link search
-userSearchTerms = input("type search terms:")
-userSearchFormatted = userSearchTerms.replace(" ", "+")
-queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=' + userSearchFormatted + '&wordVariants=on&congresses%5B%5D=115&congresses%5B%5D=114&congresses%5B%5D=113&congresses%5B%5D=112&congresses%5B%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false'
+# userSearchTerms = input("type search terms:")
+# userSearchFormatted = userSearchTerms.replace(" ", "+")
+queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=' + "air+pollution" + '&wordVariants=on&congresses%5B%5D=115&congresses%5B%5D=114&congresses%5B%5D=113&congresses%5B%5D=112&congresses%5B%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false'
 #print(queryString)
 searchResults = requests.get(queryString)
 
 soupSearch = BeautifulSoup(searchResults.text, 'html.parser')
 
-for bill_search in soupSearch.find_all("span", class_="result-heading"):
-    bill_search_links = bill_search.find("a", href=True)
-    print(bill_search_links['href'])
+billUrlList = []
+for billSearch in soupSearch.find_all("span", class_="result-heading"):
+    billUrls = billSearch.find("a", href=True)
+    billUrlList.append(billUrls['href'])
+    
+    # billUrlList2 = [billUrls]
+    # getLinks = bill_search_links.get('href')
+    # print(billUrlList)
 
-for link in bill_search_links['href']:
+
+for link in billUrlList:
     print(link)
     
     billPage = requests.get(link)
+    
     soupBillPage = BeautifulSoup(billPage.text, 'html.parser')
 
     billScrape(soupBillPage,writer)
