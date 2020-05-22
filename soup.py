@@ -26,18 +26,30 @@ def billScrape(soup,writer):
         #tracker_text = tracker.get_text()
         #print(tracker_text)
 
-    # for tracker2 in soup.find_all("h3", class_="currentVersion"):
-    #     tracker2_text = tracker2.find("span").get_text()
+    for tracker2 in soup.find_all("h3", class_="currentVersion"):
+        tracker2_text = tracker2.find("span").get_text()
         # print(tracker2_text)
 
+    billTextLink = [0]
+    for billTextUrl in soup.find_all("ul", _class="cdg-summary-wrapper-list"):
+        billTextUrl2 = billTextUrl.find("a", href=True)
+        billTextLink = billTextUrl2['href']
+        print(billTextLink)
+    billTextSearch = requests.get(billTextLink)
 
-    writer.writerow([sponsor_text,title_text,name_text])
+    soupBillText = BeautifulSoup(billTextSearch.text, 'html.parser')
+
+    billText = soupBillText.find('pre', id='billTextContainer')
+        
+
+
+    writer.writerow([sponsor_text,title_text,name_text,tracker2_text,billText])
 
 def main():
     #csv writer
     file = open('bills.csv', 'a')
     writer = csv.writer(file)
-    writer.writerow(['Sponsor', 'Title', 'Name', 'Tracker'])
+    writer.writerow(['Sponsor', 'Title', 'Name', 'Tracker', 'Bill Text'])
 
     #link search
     # userSearchTerms = input("type search terms:")
@@ -47,6 +59,8 @@ def main():
     searchResults = requests.get(queryString)
 
     soupSearch = BeautifulSoup(searchResults.text, 'html.parser')
+
+
 
     billUrlList = []
     for billSearch in soupSearch.find_all("span", class_="result-heading"):
@@ -59,7 +73,7 @@ def main():
 
 
     for link in billUrlList:
-        print(link)
+        # print(link)
         
         billPage = requests.get(link)
         
