@@ -12,9 +12,9 @@ searchResults = requests.get('https://www.congress.gov/bill/116th-congress/senat
 soup = BeautifulSoup(searchResults.text, 'html.parser')
 
 for billTextUrl in soup.find_all("a", href=textFinder):
-        print(billTextUrl)
-        if billTextUrl.contents[0] == "Text":
-                print("done")
-        print(billTextUrl.contents)
+        # print(billTextUrl)
+        billTextUrl2 = billTextUrl.get('href')
+        # billTextUrl3 = billTextUrl2['href']
+        print(billTextUrl2)
         
         # print(billTextLink)
