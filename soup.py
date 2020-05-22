@@ -33,44 +33,45 @@ def billScrape(soup,writer):
 
     writer.writerow([sponsor_text,title_text,name_text])
 
-#csv writer
-file = open('bills.csv', 'a')
-writer = csv.writer(file)
-writer.writerow(['Sponsor', 'Title', 'Name', 'Tracker'])
+def main():
+    #csv writer
+    file = open('bills.csv', 'a')
+    writer = csv.writer(file)
+    writer.writerow(['Sponsor', 'Title', 'Name', 'Tracker'])
 
-#link search
-# userSearchTerms = input("type search terms:")
-# userSearchFormatted = userSearchTerms.replace(" ", "+")
-queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=' + "air+pollution" + '&wordVariants=on&congresses%5B%5D=115&congresses%5B%5D=114&congresses%5B%5D=113&congresses%5B%5D=112&congresses%5B%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false'
-#print(queryString)
-searchResults = requests.get(queryString)
+    #link search
+    # userSearchTerms = input("type search terms:")
+    # userSearchFormatted = userSearchTerms.replace(" ", "+")
+    queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=' + "air+pollution" + '&wordVariants=on&congresses%5B%5D=115&congresses%5B%5D=114&congresses%5B%5D=113&congresses%5B%5D=112&congresses%5B%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false'
+    #print(queryString)
+    searchResults = requests.get(queryString)
 
-soupSearch = BeautifulSoup(searchResults.text, 'html.parser')
+    soupSearch = BeautifulSoup(searchResults.text, 'html.parser')
 
-billUrlList = []
-for billSearch in soupSearch.find_all("span", class_="result-heading"):
-    billUrls = billSearch.find("a", href=True)
-    billUrlList.append(billUrls['href'])
-    
-    # billUrlList2 = [billUrls]
-    # getLinks = bill_search_links.get('href')
-    # print(billUrlList)
-
-
-for link in billUrlList:
-    print(link)
-    
-    billPage = requests.get(link)
-    
-    soupBillPage = BeautifulSoup(billPage.text, 'html.parser')
-
-    billScrape(soupBillPage,writer)
+    billUrlList = []
+    for billSearch in soupSearch.find_all("span", class_="result-heading"):
+        billUrls = billSearch.find("a", href=True)
+        billUrlList.append(billUrls['href'])
+        
+        # billUrlList2 = [billUrls]
+        # getLinks = bill_search_links.get('href')
+        # print(billUrlList)
 
 
-file.close()
+    for link in billUrlList:
+        print(link)
+        
+        billPage = requests.get(link)
+        
+        soupBillPage = BeautifulSoup(billPage.text, 'html.parser')
+
+        billScrape(soupBillPage,writer)
 
 
+    file.close()
 
+if __name__ == '__main__':
+    main()
 
 
 # for line in file:
