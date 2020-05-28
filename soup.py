@@ -1,7 +1,9 @@
 import requests
 import csv
+from time import sleep
 from bs4 import BeautifulSoup
 from csv import writer
+
 
 #bill scraping loop
     # csv writer
@@ -36,7 +38,7 @@ def billScrape(soup,writer,billPage):
 
 
     index = billPage.find('?')
-    print(billPage[0:index-1]+'/text?format=txt')
+    # print(billPage[0:index-1]+'/text?format=txt')
     billTextUrl = billPage[0:index-1]+'/text?format=txt'
 
 
@@ -65,6 +67,8 @@ def billScrape(soup,writer,billPage):
 
     writer.writerow([name_text,sponsor_text,title_text,tracker2_text])
 
+    # sleep(2)
+
 
 
 def main():
@@ -74,15 +78,25 @@ def main():
     writer.writerow(['Name', 'Sponsor', 'Title', 'Tracker'])
 
     #link search
-    userSearchTerms = input("type search terms:")
-    userSearchFormatted = userSearchTerms.replace(" ", "+")
-    queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=' + userSearchFormatted + '&wordVariants=on&congresses%5B%5D=115&congresses%5B%5D=114&congresses%5B%5D=113&congresses%5B%5D=112&congresses%5B%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false'
+    # PageNo = '1'
+    # userSearchTerms = input("type search terms:")
+    # userSearchFormatted = userSearchTerms.replace(" ", "+")
+    # queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases='+userSearchFormatted+'&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=' + PageNo
+    queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=air+pollution&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=1'
+
     #print(queryString)
     searchResults = requests.get(queryString)
 
     soupSearch = BeautifulSoup(searchResults.text, 'html.parser')
 
-
+    # total page numbers
+    for PgNo in soupSearch.find_all("span", class_="results-number"):
+        PgNo2 = PgNo.next_element
+        PgNo3 = PgNo2.replace("of ","")
+        print(PgNo3)
+        # next steps. 
+        # I want to make this the end range of the loop.
+        # Need to create a loop to redefine at the end of fxn_bill_scrape
 
     billUrlList = []
     for billSearch in soupSearch.find_all("li", class_="expanded"):
@@ -109,4 +123,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
 
