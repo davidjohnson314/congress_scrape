@@ -10,33 +10,34 @@ from csv import writer
     # bill txt writer
 def billScrape(soup,writer,billPage):
     
-
+    sponsor_text = ''
     for sponsor in soup.find_all("table", class_="standard01"):
         sponsor_text = sponsor.find("a", target="_blank").get_text()
         #print(sponsor_text)
 
-    
+
+    title_text = ''
     for title in soup.find_all("h1", class_="legDetail"):
         title_text = title.get_text()
         #print(title_text)
 
-    
+    name_text = ''
     for name in soup.find_all("h2", class_="primary"):
         # name_text = name.get_text()
         name_text = name.contents[1]
         print(name_text)
-
+        
 
     #for tracker in soup.find_all("li", class_="first selected last"):
         #tracker_text = tracker.get_text()
         #print(tracker_text)
 
 
+    tracker2_text = ''
     for tracker2 in soup.find_all("h3", class_="currentVersion"):
         tracker2_text = tracker2.find("span").get_text()
         # print(tracker2_text)
-
-
+    
     index = billPage.find('?')
     # print(billPage[0:index-1]+'/text?format=txt')
     billTextUrl = billPage[0:index-1]+'/text?format=txt'
@@ -54,18 +55,19 @@ def billScrape(soup,writer,billPage):
     # billTextSearch = requests.get(billTextLink)
 
     # soupBillText = BeautifulSoup(billTextSearch.text, 'html.parser')
-
+    
+    writer.writerow([name_text,sponsor_text,title_text,tracker2_text])
 
     billText = soupBillText.find('pre', id='billTextContainer')
-    billText2 = billText.get_text()
+    if billText is not None: 
+               
+        billText2 = billText.get_text()
+        
 
-
-    BillTxt = open(name_text + ".txt", "a")
-    BillTxt.write(billText2)
-    BillTxt.close()
-
-
-    writer.writerow([name_text,sponsor_text,title_text,tracker2_text])
+        BillTxt = open(name_text + ".txt", "a")
+        BillTxt.write(billText2)
+        BillTxt.close()
+   
 
     # sleep(2)
 
@@ -79,17 +81,19 @@ def main():
 
     #link search
     
-    # userSearchTerms = input("type search terms:")
-    # userSearchFormatted = userSearchTerms.replace(" ", "+")
+    userSearchTerms = input("type search terms:")
+    userSearchFormatted = userSearchTerms.replace(" ", "+")
     # queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases='+userSearchFormatted+'&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=' + PageNo
-    queryStringNoPage = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=air+pollution&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page='
+    queryStringNoPage = 'https://www.congress.gov/quick-search/legislation?wordsPhrases='+userSearchFormatted+'&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=10&page='
     queryString = queryStringNoPage + "1"
 
     pageResults(queryString, writer)
 
     for pageNum in range(2,PageNo):
-        queryString = queryStringNoPage + str(PageNo)
+        queryString = queryStringNoPage + str(pageNum)
         pageResults(queryString, writer)
+
+    file.close()
 
 def pageResults(queryString, writer):
     #print(queryString)
@@ -105,7 +109,9 @@ def pageResults(queryString, writer):
     PgNo3 = PgNo2.replace('of ','')
     PgNoInteger = int(PgNo3)
     print(PgNoInteger)
+    global PageNo
     PageNo = PgNoInteger
+    print(PageNo)
     # next steps. 
     # I want to make this the end range of the loop.
     # Need to create a loop to redefine at the end of fxn_bill_scrape
@@ -131,7 +137,7 @@ def pageResults(queryString, writer):
         billScrape(soupBillPage,writer,link)
 
 
-    file.close()
+    
 
 if __name__ == '__main__':
     main()
