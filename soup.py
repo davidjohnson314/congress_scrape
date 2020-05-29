@@ -69,7 +69,7 @@ def billScrape(soup,writer,billPage):
 
     # sleep(2)
 
-
+PageNo = 1 # loop until 
 
 def main():
     #csv writer
@@ -78,12 +78,15 @@ def main():
     writer.writerow(['Name', 'Sponsor', 'Title', 'Tracker'])
 
     #link search
-    # PageNo = '1' loop until 
+    
     # userSearchTerms = input("type search terms:")
     # userSearchFormatted = userSearchTerms.replace(" ", "+")
     # queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases='+userSearchFormatted+'&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=' + PageNo
-    queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=air+pollution&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=1'
+    queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases=air+pollution&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=' + str(PageNo)
 
+    # for range(PageNo:PgNoInteger)
+
+def pageResults(queryString):
     #print(queryString)
     searchResults = requests.get(queryString)
 
@@ -100,7 +103,7 @@ def main():
     # next steps. 
     # I want to make this the end range of the loop.
     # Need to create a loop to redefine at the end of fxn_bill_scrape
-
+    
     billUrlList = []
     for billSearch in soupSearch.find_all("li", class_="expanded"):
         billUrls1 = billSearch.find("span", class_="result-heading")
