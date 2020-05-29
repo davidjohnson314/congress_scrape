@@ -90,15 +90,16 @@ def main():
     soupSearch = BeautifulSoup(searchResults.text, 'html.parser')
 
     # total page numbers
-    for PgNo in soupSearch.find_all("span", class_="results-number"):
-        PgNo2 = PgNo.next_element
-        PgNo3 = PgNo2.replace('of ','')
-        PgNo4 = PgNo3.replace(' ','')
-        # PgNo5 = int(PgNo4)
-        print(PgNo4)
-        # next steps. 
-        # I want to make this the end range of the loop.
-        # Need to create a loop to redefine at the end of fxn_bill_scrape
+    PgNo = soupSearch.find_all("span", class_="results-number")
+
+    PgNo2 = PgNo[1].contents[0].strip()
+    # Ex: "of 2"
+    PgNo3 = PgNo2.replace('of ','')
+    PgNoInteger = int(PgNo3)
+    print(PgNoInteger)
+    # next steps. 
+    # I want to make this the end range of the loop.
+    # Need to create a loop to redefine at the end of fxn_bill_scrape
 
     billUrlList = []
     for billSearch in soupSearch.find_all("li", class_="expanded"):
