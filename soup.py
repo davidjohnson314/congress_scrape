@@ -78,7 +78,7 @@ def main():
     writer.writerow(['Name', 'Sponsor', 'Title', 'Tracker'])
 
     #link search
-    # PageNo = '1'
+    # PageNo = '1' loop until 
     # userSearchTerms = input("type search terms:")
     # userSearchFormatted = userSearchTerms.replace(" ", "+")
     # queryString = 'https://www.congress.gov/quick-search/legislation?wordsPhrases='+userSearchFormatted+'&wordVariants=on&congresses%5B0%5D=115&congresses%5B1%5D=114&congresses%5B2%5D=113&congresses%5B3%5D=112&congresses%5B4%5D=111&legislationNumbers=&legislativeAction=&sponsor=on&representative=&senator=&searchResultViewType=expanded&KWICView=false&pageSize=250&page=' + PageNo
@@ -95,7 +95,7 @@ def main():
         PgNo3 = PgNo2.replace('of ','')
         PgNo4 = PgNo3.replace(' ','')
         # PgNo5 = int(PgNo4)
-        # print(PgNo4)
+        print(PgNo4)
         # next steps. 
         # I want to make this the end range of the loop.
         # Need to create a loop to redefine at the end of fxn_bill_scrape
